@@ -4,9 +4,10 @@ describe('empty spec', () => {
   });
 
   it('mail test', () => {
-    cy.get('.email-input').type('aaa@email.com').should('include', '@');
+    cy.get('[data-testid="email"]').type('aaa@email.com').should('include', '@');
 
-    cy.get('.email-input').clear().type('error typing').should('include', '@');
+    cy.get('[data-testid="password"]').clear().type('error typing').should('include', '@');
+    //全部PASSするコードを書かないといけない（改善必須）
   });
 
   it('password test', () => {

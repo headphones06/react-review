@@ -13,9 +13,9 @@ test('LogIn component check', () => {
   expect(mailElem).toBeInTheDocument();
 
   const passText = screen.getByLabelText('パスワード');
-  const passField = wrapper.find(sel('password'));
+  const passElem = screen.find(sel('password'));
   expect(passText).toBeInTheDocument();
-  expect(passField).toBeInTheDocument();
+  expect(passElem).toBeInTheDocument();
 
   const btn = screen.getByRole('button', { name: 'ログイン' });
   expect(btn).toBeInTheDocument();
@@ -23,3 +23,5 @@ test('LogIn component check', () => {
   const linkElem = screen.getByText('新規作成');
   expect(linkElem).toBeInTheDocument();
 });
+
+//テスト駆動開発

@@ -1,24 +1,24 @@
 import { render, screen } from '@testing-library/react';
-import LogIn from '../pages/LogIn.jsx';
+import SignUp from '../pages/SignUp.jsx';
 
 function sel(id) {
   return `[data-testid="${id}"]`;
 }
 
 test('SignUp component check', () => {
-  render(<LogIn />);
+  render(<SignUp />);
   const mailText = screen.getByLabelText('メールアドレス');
-  const mailElem = wrapper.find(sel('email'));
+  const mailElem = screen.find(sel('email'));
   expect(mailText).toBeInTheDocument();
   expect(mailElem).toBeInTheDocument();
 
-  const userText = screen.getByLabelText('ユーザー名');
-  const userElem = wrapper.find(sel('user'));
-  expect(userText).toBeInTheDocument();
-  expect(userElem).toBeInTheDocument();
+  const nameText = screen.getByLabelText('ユーザー名');
+  const nameElem = screen.find(sel('name'));
+  expect(nameText).toBeInTheDocument();
+  expect(nameElem).toBeInTheDocument();
 
   const passText = screen.getByLabelText('パスワード');
-  const passElem = wrapper.find(sel('password'));
+  const passElem = screen.find(sel('password'));
   expect(passText).toBeInTheDocument();
   expect(passElem).toBeInTheDocument();
 
