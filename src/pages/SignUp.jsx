@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import Compressor from 'compressorjs';
+import { Formik } from 'formik';
 import '../styles/SignUp.scss';
 
 export function SignUp() {
@@ -20,9 +21,6 @@ export function SignUp() {
         formData.append('file', result, result.name);
         setIcon(formData);
       },
-      maxWidth: 1000,
-      maxHeight: 400,
-      mimeType: 'image/jpg',
       error(err) {
         setErrorMessage(`画像圧縮に失敗しました。${err}`);
       },
@@ -34,7 +32,7 @@ export function SignUp() {
     const avater = { icon };
     const dataCheck = false;
     axios
-      .post(`https://api-for-missions-and-railways.herokuapp.com/users`, data)
+      .post('https://api-for-missions-and-railways.herokuapp.com/uploads', avater)
       .then(() => {
         dataCheck = true;
       })
@@ -44,7 +42,7 @@ export function SignUp() {
     if (dataCheck == true) {
       dataCheck = false;
       axios
-        .post('https://api-for-missions-and-railways.herokuapp.com/uploads', avater)
+        .post(`https://api-for-missions-and-railways.herokuapp.com/users`, data)
         .then(() => {
           useNavigate('/');
         })
@@ -60,31 +58,57 @@ export function SignUp() {
         <br />
         <h2>ログイン</h2>
         <p className="error-message">{errorMessage}</p>
-        <form className="signup-form">
-          <label className="email-label">メールアドレス</label>
-          <br />
-          <input data-testid="email" type="email" className="email-input" onChange={handleEmailChange} />
-          <br />
-          <label className="name-label">ユーザー名</label>
-          <br />
-          <input data-testid="name" type="text" className="name-input" onChange={handleNameChange} />
-          <br />
-          <label className="password-label">パスワード</label>
-          <br />
-          <input data-testid="password" type="password" className="password-input" onChange={handlePasswordChange} />
-          <br />
-          <input
-            data-testid="icon"
-            type="file"
-            className="icon"
-            accept="image/*,.jpg,.png"
-            onChange={handleIconChange}
-          />
-          <br />
-          <button type="button" className="signup-button" data-testid="upBtn" onClick={onSignUp}>
-            新規作成
-          </button>
-        </form>
+        <Formik
+          initialValues={{ email: '', name: '', password: '' }}
+          onSubmit={(values) => console.log(values)}
+          render={(props) => (
+            <form className="signup-form" onSubmit={props.handleSubmit}>
+              <label className="email-label">メールアドレス</label>
+              <br />
+              <input
+                data-testid="email"
+                type="email"
+                className="email-input"
+                value={props.values.email}
+                onChange={handleEmailChange}
+              />
+              <br />
+              <label className="name-label">ユーザー名</label>
+              <br />
+              <input
+                data-testid="name"
+                type="text"
+                className="name-input"
+                value={props.values.name}
+                onChange={handleNameChange}
+              />
+              <br />
+              <label className="password-label">パスワード</label>
+              <br />
+              <input
+                data-testid="password"
+                type="password"
+                className="password-input"
+                value={props.values.password}
+                onChange={handlePasswordChange}
+              />
+              <br />
+              <label className="password-label">アイコン</label>
+              <br />
+              <input
+                data-testid="icon"
+                type="file"
+                className="icon"
+                accept="image/*,.jpg,.png"
+                onChange={handleIconChange}
+              />
+              <br />
+              <button type="button" className="signup-button" data-testid="upBtn" onClick={onSignUp}>
+                新規作成
+              </button>
+            </form>
+          )}
+        />
         <Link to="/login">戻る</Link>
       </main>
     </div>
