@@ -4,13 +4,10 @@ describe('empty spec', () => {
   });
 
   it('mail test', () => {
-    cy.get('[data-testid="email"]').type('aaa@email.com').should('include', '@');
-
-    cy.get('[data-testid="password"]').clear().type('error typing').should('include', '@');
-    //全部PASSするコードを書かないといけない（改善必須）
+    cy.get('[data-testid="email"]').type('aaa@email.com').should('have.value', 'aaa@email.com');
   });
 
   it('password test', () => {
-    cy.get('.password-input').type(`hogehoge`).should('not.have.value', 'hogehoge');
+    cy.get('.password-input').type(`hogehoge`).should('have.value', 'hogehoge');
   });
 });

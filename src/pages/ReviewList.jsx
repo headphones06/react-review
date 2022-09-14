@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function Home() {
+export function ReviewList() {
   return (
     <div>
       <h1>This is first page</h1>
