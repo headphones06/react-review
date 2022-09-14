@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import Compressor from 'compressorjs';
 import '../styles/SignUp.scss';
 
 export function SignUp() {
@@ -11,18 +12,46 @@ export function SignUp() {
   const handleNameChange = (e) => setName(e.target.value);
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
-  const handleIconChange = (e) => setIcon(e.target.value);
+  const handleIconChange = (e) => {
+    new Compressor(e.target.files[0], {
+      quality: 0.6,
+      success(result) {
+        const formData = new FormData();
+        formData.append('file', result, result.name);
+        setIcon(formData);
+      },
+      maxWidth: 1000,
+      maxHeight: 400,
+      mimeType: 'image/jpg',
+      error(err) {
+        setErrorMessage(`画像圧縮に失敗しました。${err}`);
+      },
+    });
+  };
 
   const onSignUp = () => {
     const data = { name, email, password };
+    const avater = { icon };
+    const dataCheck = false;
     axios
-      .post(`https://api-for-missions-and-railways.herokuapp.com/signup`, data)
+      .post(`https://api-for-missions-and-railways.herokuapp.com/users`, data)
       .then(() => {
-        useNavigate('/');
+        dataCheck = true;
       })
       .catch((err) => {
         setErrorMessage(`新規作成に失敗しました。${err}`);
       });
+    if (dataCheck == true) {
+      dataCheck = false;
+      axios
+        .post('https://api-for-missions-and-railways.herokuapp.com/uploads', avater)
+        .then(() => {
+          useNavigate('/');
+        })
+        .catch((err) => {
+          setErrorMessage(`新規作成に失敗しました。${err}`);
+        });
+    }
   };
 
   return (
@@ -43,6 +72,14 @@ export function SignUp() {
           <label className="password-label">パスワード</label>
           <br />
           <input data-testid="password" type="password" className="password-input" onChange={handlePasswordChange} />
+          <br />
+          <input
+            data-testid="icon"
+            type="file"
+            className="icon"
+            accept="image/*,.jpg,.png"
+            onChange={handleIconChange}
+          />
           <br />
           <button type="button" className="signup-button" data-testid="upBtn" onClick={onSignUp}>
             新規作成
