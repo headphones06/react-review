@@ -56,7 +56,7 @@ export function SignUp() {
     <div>
       <main className="signup">
         <br />
-        <h2>ログイン</h2>
+        <h2>新規作成</h2>
         <p className="error-message">{errorMessage}</p>
         <Formik
           initialValues={{ email: '', name: '', password: '' }}
