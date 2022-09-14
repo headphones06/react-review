@@ -12,7 +12,7 @@ export function LogIn() {
   const handlePasswordChange = (e) => setPassword(e.target.value);
   const onLogIn = () => {
     axios
-      .post(`https://api-for-missions-and-railways.herokuapp.com/login`, { email, password })
+      .post(`https://api-for-missions-and-railways.herokuapp.com/signin`, { email, password })
       .then(() => {
         useNavigate('/');
       })
