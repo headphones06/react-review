@@ -1,18 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Navigate, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import Compressor from 'compressorjs';
+import styled from 'styled-components';
 import { Formik } from 'formik';
+import * as Yup from 'yup';
 import '../styles/SignUp.scss';
 
+const Error = styled.span`
+  color: red;
+`;
+
+const validation = () =>
+  Yup.object().shape({
+    email: Yup.string().email('メールアドレスの形式で入力してください').required('必須項目です'),
+    name: Yup.string().required('必須項目です'),
+    password: Yup.string().required('必須項目です'),
+  });
+
 export function SignUp() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState();
   const [icon, setIcon] = useState('');
-  const handleNameChange = (e) => setName(e.target.value);
-  const handleEmailChange = (e) => setEmail(e.target.value);
-  const handlePasswordChange = (e) => setPassword(e.target.value);
   const handleIconChange = (e) => {
     new Compressor(e.target.files[0], {
       quality: 0.6,
@@ -27,31 +35,6 @@ export function SignUp() {
     });
   };
 
-  const onSignUp = () => {
-    const data = { name, email, password };
-    const avater = { icon };
-    const dataCheck = false;
-    axios
-      .post('https://api-for-missions-and-railways.herokuapp.com/uploads', avater)
-      .then(() => {
-        dataCheck = true;
-      })
-      .catch((err) => {
-        setErrorMessage(`新規作成に失敗しました。${err}`);
-      });
-    if (dataCheck == true) {
-      dataCheck = false;
-      axios
-        .post(`https://api-for-missions-and-railways.herokuapp.com/users`, data)
-        .then(() => {
-          useNavigate('/');
-        })
-        .catch((err) => {
-          setErrorMessage(`新規作成に失敗しました。${err}`);
-        });
-    }
-  };
-
   return (
     <div>
       <main className="signup">
@@ -60,7 +43,25 @@ export function SignUp() {
         <p className="error-message">{errorMessage}</p>
         <Formik
           initialValues={{ email: '', name: '', password: '' }}
-          onSubmit={(values) => console.log(values)}
+          avater={icon}
+          validationSchema={validation()}
+          onSubmit={(values) => {
+            axios
+              .post(`https://api-for-missions-and-railways.herokuapp.com/uploads`, values)
+              .then(() => {
+                axios
+                  .post(`https://api-for-missions-and-railways.herokuapp.com/users`, avater)
+                  .then(() => {
+                    useNavigate('/');
+                  })
+                  .catch((err) => {
+                    setErrorMessage(`新規作成に失敗しました。${err}`);
+                  });
+              })
+              .catch((err) => {
+                setErrorMessage(`新規作成に失敗しました。${err}`);
+              });
+          }}
           render={(props) => (
             <form className="signup-form" onSubmit={props.handleSubmit}>
               <label className="email-label">メールアドレス</label>
@@ -68,42 +69,42 @@ export function SignUp() {
               <input
                 data-testid="email"
                 type="email"
+                name="email"
                 className="email-input"
                 value={props.values.email}
-                onChange={handleEmailChange}
+                onChange={props.handleChange}
               />
+              <Error data-testid="email-err">{props.errors.email}</Error>
               <br />
               <label className="name-label">ユーザー名</label>
               <br />
               <input
                 data-testid="name"
                 type="text"
+                name="name"
                 className="name-input"
                 value={props.values.name}
-                onChange={handleNameChange}
+                onChange={props.handleChange}
               />
+              <Error data-testid="name-err">{props.errors.name}</Error>
               <br />
               <label className="password-label">パスワード</label>
               <br />
               <input
                 data-testid="password"
                 type="password"
+                name="password"
                 className="password-input"
                 value={props.values.password}
-                onChange={handlePasswordChange}
+                onChange={props.handleChange}
               />
+              <Error data-testid="password-err">{props.errors.password}</Error>
               <br />
               <label className="password-label">アイコン</label>
               <br />
-              <input
-                data-testid="icon"
-                type="file"
-                className="icon"
-                accept="image/*,.jpg,.png"
-                onChange={handleIconChange}
-              />
+              <input data-testid="icon" type="file" className="icon" accept=".jpg,.png" onChange={handleIconChange} />
               <br />
-              <button type="button" className="signup-button" data-testid="upBtn" onClick={onSignUp}>
+              <button type="submit" className="signup-button" data-testid="upBtn">
                 新規作成
               </button>
             </form>

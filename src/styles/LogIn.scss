@@ -1,7 +1,7 @@
 @charset "utf-8";
 
 .login {
-  width: 500px;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -14,12 +14,9 @@
   color: #555555;
 }
 
-.email-input,
-.password-input {
-  width: 100%;
+.input {
+  width: 60%;
   font-size: large;
-  height: 30px;
-  margin-bottom: 25px;
 }
 
 .login-button {

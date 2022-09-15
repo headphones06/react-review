@@ -3,11 +3,16 @@ describe('empty spec', () => {
     cy.visit('/login');
   });
 
-  it('mail test', () => {
-    cy.get('[data-testid="email"]').type('aaa@email.com').should('have.value', 'aaa@email.com');
+  it('mail failed test', () => {
+    cy.get('[data-testid="email"]').clear().type('failed test');
+  });
+
+  it('mail success test', () => {
+    cy.get('[data-testid="email"]').clear().type('aaa@email.com').should('have.value', 'aaa@email.com');
+    cy.get('[data-testid="email-err"]').should('have.value', '');
   });
 
   it('password test', () => {
-    cy.get('.password-input').type(`hogehoge`).should('have.value', 'hogehoge');
+    cy.get('[data-testid="password"]').type(`hogehoge`).should('have.value', 'hogehoge');
   });
 });

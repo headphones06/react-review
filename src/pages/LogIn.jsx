@@ -1,25 +1,23 @@
 import React, { useState } from 'react';
 import { Navigate, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import styled from 'styled-components';
 import { Formik } from 'formik';
+import * as Yup from 'yup';
 import '../styles/LogIn.scss';
 
+const Error = styled.span`
+  color: red;
+`;
+
+const validation = () =>
+  Yup.object().shape({
+    email: Yup.string().email('メールアドレスの形式で入力してください').required('必須項目です'),
+    password: Yup.string().required('必須項目です'),
+  });
+
 export function LogIn() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState();
-  const handleEmailChange = (e) => setEmail(e.target.value);
-  const handlePasswordChange = (e) => setPassword(e.target.value);
-  const onLogIn = () => {
-    axios
-      .post(`https://api-for-missions-and-railways.herokuapp.com/signin`, { email, password })
-      .then(() => {
-        useNavigate('/');
-      })
-      .catch((err) => {
-        setErrorMessage(`ログインに失敗しました。${err}`);
-      });
-  };
 
   return (
     <div>
@@ -29,7 +27,17 @@ export function LogIn() {
         <p className="error-message">{errorMessage}</p>
         <Formik
           initialValues={{ email: '', password: '' }}
-          onSubmit={(values) => console.log(values)}
+          validationSchema={validation()}
+          onSubmit={(values) => {
+            axios
+              .post(`https://api-for-missions-and-railways.herokuapp.com/signin`, { values })
+              .then(() => {
+                useNavigate('/');
+              })
+              .catch((err) => {
+                setErrorMessage(`ログインに失敗しました。${err}`);
+              });
+          }}
           render={(props) => (
             <form className="login-form" onSubmit={props.handleSubmit}>
               <label className="email-label">メールアドレス</label>
@@ -37,22 +45,26 @@ export function LogIn() {
               <input
                 data-testid="email"
                 type="email"
-                className="email-input"
+                name="email"
+                className="input"
                 value={props.values.email}
-                onChange={handleEmailChange}
+                onChange={props.handleChange}
               />
+              <Error data-testid="email-err">{props.errors.email}</Error>
               <br />
               <label className="password-label">パスワード</label>
               <br />
               <input
                 data-testid="password"
                 type="password"
-                className="password-input"
+                name="password"
+                className="input"
                 value={props.values.password}
-                onChange={handlePasswordChange}
+                onChange={props.handleChange}
               />
+              <Error>{props.errors.password}</Error>
               <br />
-              <button type="button" className="login-button" data-testid="inBtn" onClick={onLogIn}>
+              <button type="submit" className="login-button" data-testid="inBtn">
                 ログイン
               </button>
             </form>

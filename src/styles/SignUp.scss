@@ -1,7 +1,7 @@
 @charset "utf-8";
 
 .signup {
-  width: 500px;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -18,7 +18,7 @@
 .email-input,
 .password-input,
 .name-input {
-  width: 100%;
+  width: 60%;
   font-size: large;
   height: 30px;
   margin-bottom: 25px;

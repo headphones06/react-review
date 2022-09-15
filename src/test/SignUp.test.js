@@ -1,12 +1,29 @@
+import React from 'react';
 import { render, screen } from '@testing-library/react';
-import SignUp from '../pages/SignUp.jsx';
+import { unmountComponentAtNode } from 'react-dom';
+import { SignUp } from '../pages/SignUp.jsx';
+
+let container = null;
+beforeEach(() => {
+  // setup a DOM element as a render target
+  container = document.createElement('div');
+  document.body.appendChild(container);
+});
+
+afterEach(() => {
+  // cleanup on exiting
+  unmountComponentAtNode(container);
+  container.remove();
+  container = null;
+});
 
 function sel(id) {
   return `[data-testid="${id}"]`;
 }
 
 test('SignUp component check', () => {
-  render(<SignUp />);
+  render(<SignUp />, container);
+
   const mailText = screen.getByLabelText('メールアドレス');
   const mailElem = screen.find(sel('email'));
   expect(mailText).toBeInTheDocument();
@@ -22,7 +39,7 @@ test('SignUp component check', () => {
   expect(passText).toBeInTheDocument();
   expect(passElem).toBeInTheDocument();
 
-  const btn = screen.getByRole('button', { name: '送信' });
+  const btn = screen.getByRole('button', { name: '新規作成' });
   expect(btn).toBeInTheDocument();
 
   const linkElem = screen.getByText('戻る');
