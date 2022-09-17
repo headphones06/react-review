@@ -19,6 +19,7 @@ const validation = () =>
   });
 
 export function SignUp() {
+  const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState();
   const [icon, setIcon] = useState('');
   const handleIconChange = (e) => {
@@ -26,7 +27,9 @@ export function SignUp() {
       quality: 0.6,
       success(result) {
         const formData = new FormData();
+        console.log(formData);
         formData.append('file', result, result.name);
+        console.log(formData);
         setIcon(formData);
       },
       error(err) {
@@ -43,23 +46,25 @@ export function SignUp() {
         <p className="error-message">{errorMessage}</p>
         <Formik
           initialValues={{ email: '', name: '', password: '' }}
-          avater={icon}
           validationSchema={validation()}
           onSubmit={(values) => {
+            const sendData = { icon };
+            console.log(sendData);
             axios
-              .post(`https://api-for-missions-and-railways.herokuapp.com/uploads`, values)
+              .post(`https://api-for-missions-and-railways.herokuapp.com/users`, values)
               .then(() => {
                 axios
-                  .post(`https://api-for-missions-and-railways.herokuapp.com/users`, avater)
+                  .post(`https://api-for-missions-and-railways.herokuapp.com/uploads`, sendData)
                   .then(() => {
-                    useNavigate('/');
+                    console.log('user create successed');
+                    navigate('/');
                   })
                   .catch((err) => {
-                    setErrorMessage(`新規作成に失敗しました。${err}`);
+                    console.log(`新規作成(icon)に失敗しました。${err}`);
                   });
               })
               .catch((err) => {
-                setErrorMessage(`新規作成に失敗しました。${err}`);
+                setErrorMessage(`新規作成(user)に失敗しました。${err}`);
               });
           }}
           render={(props) => (

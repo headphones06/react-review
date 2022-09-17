@@ -17,6 +17,7 @@ const validation = () =>
   });
 
 export function LogIn() {
+  const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState();
 
   return (
@@ -30,9 +31,9 @@ export function LogIn() {
           validationSchema={validation()}
           onSubmit={(values) => {
             axios
-              .post(`https://api-for-missions-and-railways.herokuapp.com/signin`, { values })
+              .post(`https://api-for-missions-and-railways.herokuapp.com/signin`, values)
               .then(() => {
-                useNavigate('/');
+                navigate('/');
               })
               .catch((err) => {
                 setErrorMessage(`ログインに失敗しました。${err}`);
