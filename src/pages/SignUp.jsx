@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Navigate, useNavigate, Link } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import Compressor from 'compressorjs';
 import styled from 'styled-components';
@@ -21,21 +22,22 @@ const validation = () =>
 export function SignUp() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState();
+  const formData = new FormData();
   const [icon, setIcon] = useState('');
+  const [cookies, setCookie, removeCookie] = useCookies();
   const handleIconChange = (e) => {
     new Compressor(e.target.files[0], {
       quality: 0.6,
       success(result) {
-        const formData = new FormData();
-        console.log(formData);
-        formData.append('file', result, result.name);
-        console.log(formData);
-        setIcon(formData);
+        formData.append('icon', result, result.name);
+        console.log(formData.get('icon'));
+        setIcon(formData.get('icon'));
       },
       error(err) {
         setErrorMessage(`画像圧縮に失敗しました。${err}`);
       },
     });
+    console.log(icon);
   };
 
   return (
@@ -48,19 +50,25 @@ export function SignUp() {
           initialValues={{ email: '', name: '', password: '' }}
           validationSchema={validation()}
           onSubmit={(values) => {
-            const sendData = { icon };
-            console.log(sendData);
             axios
               .post(`https://api-for-missions-and-railways.herokuapp.com/users`, values)
-              .then(() => {
+              .then((res) => {
+                const { token } = res.data;
+                setCookie('token', token);
+                console.log(icon);
                 axios
-                  .post(`https://api-for-missions-and-railways.herokuapp.com/uploads`, sendData)
+                  .post(`https://api-for-missions-and-railways.herokuapp.com/uploads`, formData, {
+                    headers: {
+                      'Content-Type': 'application/x-www-form-urlencoded',
+                      authorization: `Bearer ${cookies.token}`,
+                    },
+                  })
                   .then(() => {
                     console.log('user create successed');
                     navigate('/');
                   })
                   .catch((err) => {
-                    console.log(`新規作成(icon)に失敗しました。${err}`);
+                    setErrorMessage(`新規作成(icon)に失敗しました。${err}`);
                   });
               })
               .catch((err) => {

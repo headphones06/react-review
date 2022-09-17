@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Navigate, useNavigate, Link } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 import axios from 'axios';
 import styled from 'styled-components';
 import { Formik } from 'formik';
@@ -19,6 +20,7 @@ const validation = () =>
 export function LogIn() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState();
+  const [cookies, setCookie, removeCookie] = useCookies();
 
   return (
     <div>
@@ -32,7 +34,8 @@ export function LogIn() {
           onSubmit={(values) => {
             axios
               .post(`https://api-for-missions-and-railways.herokuapp.com/signin`, values)
-              .then(() => {
+              .then((res) => {
+                setCookie('token', res.data.token);
                 navigate('/');
               })
               .catch((err) => {
