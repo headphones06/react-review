@@ -1,0 +1,49 @@
+@charset "utf-8";
+
+.review {
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+
+  &__title {
+    text-align: start;
+  }
+
+  &__list {
+    display: inline-block;
+    width: 40%;
+    text-align: start;
+    vertical-align: top;
+    margin: 25px;
+    border: solid;
+    border-color: black;
+
+    &--link {
+      text-decoration: none;
+    }
+
+    &--title {
+      margin: 5px;
+      margin-bottom: 10px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis ellipsis;
+    }
+
+    &--user {
+      margin: 5px;
+    }
+
+    &--review {
+      margin: 5px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis ellipsis;
+    }
+  }
+
+  &__newbtn {
+    margin: 20px;
+    display: flex;
+  }
+}

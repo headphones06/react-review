@@ -3,28 +3,28 @@
 .login {
   width: 100%;
   margin: 0 auto;
-}
 
-.login-form {
-  margin: 25px 0;
-}
+  &__form {
+    margin: 25px 0;
 
-.email-label,
-.password-label {
-  color: #555555;
+    &--label {
+      color: #555555;
+    }
+  }
+
+  &__button {
+    background-color: #242f9b;
+    color: #ffffff;
+    width: 100px;
+    height: 40px;
+    border-radius: 5px;
+  }
 }
 
 .input {
   width: 60%;
   font-size: large;
-}
-
-.login-button {
-  background-color: #242f9b;
-  color: #ffffff;
-  width: 100px;
-  height: 40px;
-  border-radius: 5px;
+  margin-bottom: 25px;
 }
 
 .error-message {

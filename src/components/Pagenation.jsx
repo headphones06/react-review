@@ -1,7 +1,7 @@
 import React from 'react';
-import '../styles/MoveList.scss';
+import '../styles/Pagenation.scss';
 
-export function MoveList(props) {
+export function Pagenation(props) {
   const increment = () => props.setCount((prevValue) => prevValue + 10);
   const decrement = () => props.setCount((prevValue) => prevValue - 10);
 

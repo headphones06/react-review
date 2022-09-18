@@ -35,16 +35,17 @@ export function LogIn() {
             axios
               .post(`https://api-for-missions-and-railways.herokuapp.com/signin`, values)
               .then((res) => {
-                setCookie('token', res.data.token);
+                setCookie('token', res.data.token, { secure: true, sameSite: 'None' });
                 navigate('/');
               })
               .catch((err) => {
                 setErrorMessage(`ログインに失敗しました。${err}`);
               });
           }}
-          render={(props) => (
-            <form className="login-form" onSubmit={props.handleSubmit}>
-              <label className="email-label">メールアドレス</label>
+        >
+          {(props) => (
+            <form className="login__form" onSubmit={props.handleSubmit}>
+              <label className="login__form--label">メールアドレス</label>
               <br />
               <input
                 data-testid="email"
@@ -56,7 +57,7 @@ export function LogIn() {
               />
               <Error data-testid="email-err">{props.errors.email}</Error>
               <br />
-              <label className="password-label">パスワード</label>
+              <label className="login__form--label">パスワード</label>
               <br />
               <input
                 data-testid="password"
@@ -68,12 +69,12 @@ export function LogIn() {
               />
               <Error>{props.errors.password}</Error>
               <br />
-              <button type="submit" className="login-button" data-testid="inBtn">
+              <button type="submit" className="login__button" data-testid="inBtn">
                 ログイン
               </button>
             </form>
           )}
-        />
+        </Formik>
         <Link to="/signup">新規作成</Link>
       </main>
     </div>

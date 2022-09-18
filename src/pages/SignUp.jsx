@@ -22,22 +22,22 @@ const validation = () =>
 export function SignUp() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState();
-  const formData = new FormData();
+  const form = new FormData();
   const [icon, setIcon] = useState('');
   const [cookies, setCookie, removeCookie] = useCookies();
   const handleIconChange = (e) => {
     new Compressor(e.target.files[0], {
       quality: 0.6,
       success(result) {
-        formData.append('icon', result, result.name);
-        console.log(formData.get('icon'));
-        setIcon(formData.get('icon'));
+        form.append('icon', result, result.name);
+        console.log(form.get('icon'));
+        setIcon(form.get('icon'));
+        console.log(icon);
       },
       error(err) {
         setErrorMessage(`画像圧縮に失敗しました。${err}`);
       },
     });
-    console.log(icon);
   };
 
   return (
@@ -54,13 +54,12 @@ export function SignUp() {
               .post(`https://api-for-missions-and-railways.herokuapp.com/users`, values)
               .then((res) => {
                 const { token } = res.data;
-                setCookie('token', token);
-                console.log(icon);
+                setCookie('token', token, { secure: true, sameSite: 'None' });
                 axios
-                  .post(`https://api-for-missions-and-railways.herokuapp.com/uploads`, formData, {
+                  .post(`https://api-for-missions-and-railways.herokuapp.com/uploads`, icon, {
                     headers: {
-                      'Content-Type': 'application/x-www-form-urlencoded',
-                      authorization: `Bearer ${cookies.token}`,
+                      'Content-Type': 'multipart/form-data',
+                      Authorization: `Bearer ${cookies.token}`,
                     },
                   })
                   .then(() => {
@@ -75,7 +74,8 @@ export function SignUp() {
                 setErrorMessage(`新規作成(user)に失敗しました。${err}`);
               });
           }}
-          render={(props) => (
+        >
+          {(props) => (
             <form className="signup-form" onSubmit={props.handleSubmit}>
               <label className="email-label">メールアドレス</label>
               <br />
@@ -122,7 +122,7 @@ export function SignUp() {
               </button>
             </form>
           )}
-        />
+        </Formik>
         <Link to="/login">戻る</Link>
       </main>
     </div>
