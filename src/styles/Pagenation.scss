@@ -1,4 +1,5 @@
 .btnset {
+  height: fit-content;
   display: flex;
   justify-content: space-around;
   margin-bottom: 10px;
@@ -6,4 +7,9 @@
   margin-right: 50px;
   padding-left: 100px;
   padding-right: 100px;
+}
+
+p {
+  margin: 0;
+  font-size: 15px;
 }

@@ -3,33 +3,25 @@
 .signup {
   width: 100%;
   margin: 0 auto;
-}
-
-.signup-form {
-  margin: 25px 0;
-}
-
-.email-label,
-.password-label,
-.name-label {
-  color: #555555;
-}
-
-.email-input,
-.password-input,
-.name-input {
-  width: 60%;
-  font-size: large;
-  height: 30px;
-  margin-bottom: 25px;
-}
-
-.signup-button {
-  background-color: #242f9b;
-  color: #ffffff;
-  width: 100px;
-  height: 40px;
-  border-radius: 5px;
+  &__form {
+    margin: 25px 0;
+    &--label {
+      color: #555555;
+    }
+    &--input {
+      width: 60%;
+      font-size: large;
+      height: 30px;
+      margin-bottom: 25px;
+    }
+    &--button {
+      background-color: #242f9b;
+      color: #ffffff;
+      width: 100px;
+      height: 40px;
+      border-radius: 5px;
+    }
+  }
 }
 
 .error-message {

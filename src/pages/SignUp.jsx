@@ -20,25 +20,50 @@ const validation = () =>
   });
 
 export function SignUp() {
+  const data = new FormData();
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState();
-  const form = new FormData();
-  const [icon, setIcon] = useState('');
   const [cookies, setCookie, removeCookie] = useCookies();
   const handleIconChange = (e) => {
-    new Compressor(e.target.files[0], {
+    const files = e.target.files[0];
+    if (!files) {
+      return;
+    }
+    new Compressor(files, {
+      height: 200,
+      width: 300,
       quality: 0.6,
       success(result) {
-        form.append('icon', result, result.name);
-        console.log(form.get('icon'));
-        setIcon(form.get('icon'));
-        console.log(icon);
+        data.append('icon', result, result.name);
+        previewFile(result);
       },
       error(err) {
         setErrorMessage(`画像圧縮に失敗しました。${err}`);
       },
     });
   };
+
+  function previewFile(file) {
+    const preview = document.getElementById('preview');
+    const child = preview.childNodes;
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      if (child.length == 0) {
+        const imageUrl = e.target.result; // URLはevent.target.resultで呼び出せる
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        preview.appendChild(img);
+      } else {
+        preview.removeChild(child.item(0));
+        const imageUrl = e.target.result;
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        preview.appendChild(img);
+      }
+    };
+    reader.readAsDataURL(file);
+  }
 
   return (
     <div>
@@ -56,14 +81,14 @@ export function SignUp() {
                 const { token } = res.data;
                 setCookie('token', token, { secure: true, sameSite: 'None' });
                 axios
-                  .post(`https://api-for-missions-and-railways.herokuapp.com/uploads`, icon, {
+                  .post(`https://api-for-missions-and-railways.herokuapp.com/uploads`, data, {
                     headers: {
-                      'Content-Type': 'multipart/form-data',
+                      'Content-type': 'multipart/form-data',
                       Authorization: `Bearer ${cookies.token}`,
                     },
                   })
-                  .then(() => {
-                    console.log('user create successed');
+                  .then((res) => {
+                    console.log(res.data);
                     navigate('/');
                   })
                   .catch((err) => {
@@ -76,48 +101,55 @@ export function SignUp() {
           }}
         >
           {(props) => (
-            <form className="signup-form" onSubmit={props.handleSubmit}>
-              <label className="email-label">メールアドレス</label>
+            <form className="signup__form" onSubmit={props.handleSubmit}>
+              <label className="signup__form--label">メールアドレス</label>
               <br />
               <input
                 data-testid="email"
                 type="email"
                 name="email"
-                className="email-input"
+                className="signup__form--input"
                 value={props.values.email}
                 onChange={props.handleChange}
               />
               <Error data-testid="email-err">{props.errors.email}</Error>
               <br />
-              <label className="name-label">ユーザー名</label>
+              <label className="signup__form--label">ユーザー名</label>
               <br />
               <input
                 data-testid="name"
                 type="text"
                 name="name"
-                className="name-input"
+                className="signup__form--input"
                 value={props.values.name}
                 onChange={props.handleChange}
               />
               <Error data-testid="name-err">{props.errors.name}</Error>
               <br />
-              <label className="password-label">パスワード</label>
+              <label className="signup__form--label">パスワード</label>
               <br />
               <input
                 data-testid="password"
                 type="password"
                 name="password"
-                className="password-input"
+                className="signup__form--input"
                 value={props.values.password}
                 onChange={props.handleChange}
               />
               <Error data-testid="password-err">{props.errors.password}</Error>
               <br />
-              <label className="password-label">アイコン</label>
+              <label className="signup__form--label">アイコン</label>
               <br />
-              <input data-testid="icon" type="file" className="icon" accept=".jpg,.png" onChange={handleIconChange} />
+              <input
+                type="file"
+                data-testid="icon"
+                className="icon"
+                accept="image/png, image/jpg"
+                onChange={handleIconChange}
+              />
+              <div id="preview"></div>
               <br />
-              <button type="submit" className="signup-button" data-testid="upBtn">
+              <button type="submit" className="signup__form--button" data-testid="upBtn">
                 新規作成
               </button>
             </form>

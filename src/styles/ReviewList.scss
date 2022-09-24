@@ -9,6 +9,14 @@
     text-align: start;
   }
 
+  &__error {
+    max-width: fit-content;
+    text-align: start;
+    background-color: #f3d18a;
+    color: #ff3333;
+    margin: 3px;
+  }
+
   &__list {
     display: inline-block;
     width: 40%;
@@ -34,7 +42,7 @@
       margin: 5px;
     }
 
-    &--review {
+    &--detail {
       margin: 5px;
       overflow: hidden;
       white-space: nowrap;
